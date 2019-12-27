@@ -53,6 +53,19 @@ namespace BitmapMaker
             bmp.Save(file);
         }
 
+        [TestMethod]
+        public void convertTo16bits()
+        {
+            FileStream fs = File.Open("images/1206_104039.826.raw", FileMode.Open);
+            int bits = 16;
+
+            Bitmap bmp = convertToBitmap(fs, bits);
+
+            string file = "images/16.png";
+
+            bmp.Save(file);
+        }
+
         private static Bitmap convertToBitmap(FileStream fs, int bits)
         {
             int shift = 16 - bits;
@@ -143,11 +156,13 @@ namespace BitmapMaker
             {
                 // map input value to 8-bit range
                 //
-                byte intensity = (byte)((i * 0xFF) / max_input);
+                byte intensity = (byte)((i * 256) / max_input);
 
                 // create ARGB output value A=255, R=G=B=intensity
                 //
                 lut[i] = (uint)(0xFF000000L | (intensity * 0x00010101L));
+                Trace.WriteLine(string.Format("0x{0:X}", lut[i]));
+
             }
 
             return lut;
